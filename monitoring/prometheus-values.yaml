@@ -1,0 +1,36 @@
+nodeExporter:
+  enabled: false
+kubeEtcd:
+  enabled: false
+kubeScheduler:
+  enabled: false
+kubeControllerManager:
+  enabled: false
+kubeProxy:
+  enabled: false
+prometheusOperator:
+  admissionWebhooks:
+    enabled: false
+  tls:
+    enabled: false
+prometheus:
+  prometheusSpec:
+    retention: 6h
+alertmanager:
+  alertmanagerSpec:
+    secrets:
+      - slack-webhook
+  config:
+    route:
+      receiver: "null"
+      group_by: ["alertname"]
+      routes:
+        - receiver: slack
+          matchers:
+            - 'alertname=~"RobotShop.*"'
+    receivers:
+      - name: "null"
+      - name: slack
+        slack_configs:
+          - api_url_file: /etc/alertmanager/secrets/slack-webhook/url
+            send_resolved: true
