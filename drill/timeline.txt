@@ -2,5 +2,5 @@
 2026-11-02 21:12:16 WAT  ALERT PENDING (Prometheus activeAt 20:12:16Z)
 ~2026-11-02 21:12:46 WAT ALERT FIRING (about 30s after pending, per the rule's for: 30s; not measured)
 2026-11-02 21:13:00 WAT  Slack [FIRING:1] message received (about 21:13)
-2026-11-02 21:19:00 WAT  MITIGATION: scaled payment back to 1 replica
+2026-11-02 21:18:32 WAT  MITIGATION: scaled payment back to 1 replica (recorded by command)
 2026-11-02 21:22:00 WAT  Slack [RESOLVED] message received
