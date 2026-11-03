@@ -6,12 +6,12 @@ Forked from `instana/robot-shop` and run on the local `kind` cluster from Capsto
 
 | Step | Status |
 |---|---|
-| 1. Deploy and watch (Robot Shop + load generator) | In progress |
-| 2. Metrics: kube-prometheus-stack + one dashboard | Not started |
-| 3. Logs: Fluent Bit to Loki | Not started |
+| 1. Deploy and watch (Robot Shop + load generator) | Done |
+| 2. Metrics: kube-prometheus-stack + one dashboard | Done (monitoring/) |
+| 3. Logs: Fluent Bit to Loki | Done, searchable by service |
 | 4. One trace in Jaeger | Not started |
-| 5. SLO, error budget policy, Slack alert | Not started |
-| 6. Incident drill and postmortem | Not started |
+| 5. SLO, error budget policy, Slack alert | Done (SLO.md, RUNBOOK.md) |
+| 6. Incident drill and postmortem | Done (POSTMORTEM.md, drill/timeline.txt) |
 
 ## Step 1: Deploy Robot Shop
 
@@ -31,3 +31,10 @@ kubectl -n robot-shop apply -f K8s/load-deployment.yaml
 - **MySQL and RabbitMQ were killed within seconds of starting (`OOMKilled`, exit code 137)** even after raising their limits. The node's container runtime was giving every container an open-files limit of about 2 billion, which makes these programs allocate far more memory than their limits allow. Fix: I set `LimitNOFILE=1048576` for `containerd` inside the kind node and recreated the pods. This lives in the node, not in the chart, so it has to be repeated if the cluster is recreated.
 - **Images stuck in `ContainerCreating` / `ImagePullBackOff`** because the node could not download them on my connection. Fix: I pulled each image on my machine and copied it into the cluster with `kind load`.
 - **The cluster hung** (API timeouts) while many images unpacked at once. Fix: restarting WSL and the node container.
+
+## Known limits
+
+- The dashboard has no request-rate, error-rate or latency panels, because Robot Shop does not export request metrics. The panel labelled "latency" shows CPU.
+- The SLI is pod readiness, not request success.
+- Prometheus and Loki use temporary storage, so history is lost when they restart.
+- Logs have a `service` label but no `level` label, so level is a text filter.
